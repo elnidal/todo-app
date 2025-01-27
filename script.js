@@ -23,7 +23,13 @@ function addTodo() {
             createdAt: new Date().toISOString()
         };
         
-        todos.unshift(todo); // Add to beginning of array
+        // Add animation class
+        const list = document.getElementById('todoList');
+        const li = document.createElement('li');
+        li.style.opacity = '0';
+        li.style.transform = 'translateX(-20px)';
+        
+        todos.unshift(todo);
         saveTodos();
         renderTodos();
         updateTaskCount();
@@ -32,6 +38,9 @@ function addTodo() {
         input.value = '';
         dateInput.value = '';
         priority.value = 'low';
+        
+        // Focus back on input
+        input.focus();
     }
 }
 
@@ -49,12 +58,18 @@ function toggleComplete(id) {
     updateTaskCount();
 }
 
-// Delete todo
+// Delete todo with animation
 function deleteTodo(id) {
-    todos = todos.filter(todo => todo.id !== id);
-    saveTodos();
-    renderTodos();
-    updateTaskCount();
+    const element = document.querySelector(`li[data-id="${id}"]`);
+    element.style.opacity = '0';
+    element.style.transform = 'translateX(20px)';
+    
+    setTimeout(() => {
+        todos = todos.filter(todo => todo.id !== id);
+        saveTodos();
+        renderTodos();
+        updateTaskCount();
+    }, 300);
 }
 
 // Clear completed todos
@@ -67,13 +82,11 @@ function clearCompleted() {
 
 // Filter todos
 function filterTodos(filter) {
-    // Update active button
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.querySelector(`button[onclick="filterTodos('${filter}')"]`).classList.add('active');
     
-    // Filter todos
     const todoList = document.getElementById('todoList');
     todoList.innerHTML = '';
     
@@ -100,29 +113,45 @@ function renderTodoList(todosToRender) {
     
     todosToRender.forEach(todo => {
         const li = document.createElement('li');
-        li.className = `priority-${todo.priority} ${todo.completed ? 'completed' : ''}`;
+        li.setAttribute('data-id', todo.id);
+        li.className = `${todo.completed ? 'completed' : ''}`;
         
         li.innerHTML = `
             <input type="checkbox" ${todo.completed ? 'checked' : ''} 
                 onclick="toggleComplete(${todo.id})">
             <span class="todo-text">${todo.text}</span>
-            ${todo.date ? `<span class="date">Due: ${todo.date}</span>` : ''}
-            <span class="priority-badge">${todo.priority}</span>
+            ${todo.date ? `<span class="date">${formatDate(todo.date)}</span>` : ''}
+            <span class="priority-badge priority-${todo.priority}">${todo.priority}</span>
             <button onclick="deleteTodo(${todo.id})" class="delete-btn">
                 <i class="fas fa-trash"></i>
             </button>
         `;
         
+        // Add animation
+        li.style.opacity = '0';
+        li.style.transform = 'translateX(-20px)';
         todoList.appendChild(li);
+        
+        // Trigger animation
+        setTimeout(() => {
+            li.style.opacity = '1';
+            li.style.transform = 'translateX(0)';
+        }, 50);
     });
+}
+
+// Format date
+function formatDate(dateString) {
+    const options = { month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
 // Update task count
 function updateTaskCount() {
-    const count = todos.length;
     const activeCount = todos.filter(todo => !todo.completed).length;
+    const totalCount = todos.length;
     document.getElementById('taskCount').textContent = 
-        `${activeCount} active / ${count} total tasks`;
+        `${activeCount} active / ${totalCount} total`;
 }
 
 // Save todos to localStorage
