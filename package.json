@@ -1,0 +1,30 @@
+{
+  "name": "my-todo-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}function addTodo() {
+  const input = document.getElementById('todoInput');
+  const list = document.getElementById('todoList');
+  
+  if (input.value !== '') {
+      // Create new list item
+      const li = document.createElement('li');
+      li.innerHTML = `
+          ${input.value}
+          <button onclick="this.parentElement.remove()">Delete</button>
+      `;
+      
+      // Add to list
+      list.appendChild(li);
+      
+      // Clear input
+      input.value = '';
+  }
+}
