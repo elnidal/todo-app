@@ -3,17 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Todo App</title>
+    <title>Enhanced Todo App</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>My Todo List</h1>
+        <h1><i class="fas fa-check-double"></i> Enhanced Todo List</h1>
+        
+        <!-- Input Form -->
         <div class="input-container">
             <input type="text" id="todoInput" placeholder="Enter a new task">
-            <button onclick="addTodo()">Add</button>
+            <input type="date" id="todoDate">
+            <select id="priority">
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <button onclick="addTodo()" class="add-btn">
+                <i class="fas fa-plus"></i> Add Task
+            </button>
         </div>
+
+        <!-- Filter Options -->
+        <div class="filter-container">
+            <button onclick="filterTodos('all')" class="filter-btn active">All</button>
+            <button onclick="filterTodos('active')" class="filter-btn">Active</button>
+            <button onclick="filterTodos('completed')" class="filter-btn">Completed</button>
+        </div>
+
+        <!-- Todo List -->
         <ul id="todoList"></ul>
+
+        <!-- Summary -->
+        <div class="summary">
+            <span id="taskCount">0 tasks</span>
+            <button onclick="clearCompleted()" class="clear-btn">
+                Clear Completed
+            </button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
